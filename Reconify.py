@@ -154,7 +154,7 @@ def ffuf_scanner():
 
 def wpscan_tool():
     print("WPScan WordPress Scanner")
-    print(Fore.RED + "Add wpscan api in wpscankey.txtBefore using it" + Style.RESET_ALL)
+    print(Fore.RED + "Add wpscan api in wpscankey.txt Before using it" + Style.RESET_ALL)
     print("=" * 40)
     
     target = input("Enter WordPress site URL: ")
