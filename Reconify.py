@@ -260,13 +260,87 @@ def shell():
         print("Wrong")
 
 
+def subfinder():
+    domain = input("Enter domain (example.com): ")
+    
+    output_file = f"Reports/subfinder_{domain}_{timestamp}.txt"
+    
+    print(f"\n Finding subdomains for {domain}...")
+    
+    cmd = f"subfinder -d {domain} -o {output_file}"
+    result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+    
+    if result.stdout:
+        print(result.stdout)
+    
+
+    if result.stderr:
+        print("Errors:", result.stderr)
+    
+
+    if os.path.exists(output_file):
+        with open(output_file, 'r') as f:
+            subdomains = f.readlines()
+            count = len(subdomains)
+        
+        print(f"\n Found {count} subdomains!")
+        
+def httprobe():
+    print("="*50)
+    print("First Install httprobe: go install httprobe")
+    print("="*50)
+
+    domain_file = input("Enter your domain file: ")
+    
+    results_file = open(f"Reports/live_results_{timestamp}.txt", "w")
+    
+    print("\n" + "="*20)
+    print("Checking Live Domains...")
+    print("="*20)
+    
+    cmd = f"cat {domain_file} | httprobe"
+    
+    # 4. Show real-time results
+    count = 0
+    process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, text=True)
+    
+    for line in process.stdout:
+        if line.strip():  # If line is not empty
+            count += 1
+            print(f"[{count}] ✅ {line.strip()}")
+            results_file.write(line)
+    
+    # 5. Done
+    results_file.close()
+    print(f"\n✅ Found {count} live domains!")
+    print("📁 Saved to: live_results.txt")
+
+
+
 def manu():
+    banner = Fore.RED + ''' _______              ______                       __   ______            
+    |       \            /      \                     |  \ /      \           
+    | $$$$$$$\  ______  |  $$$$$$\  ______   _______   \$$|  $$$$$$\ __    __ 
+    | $$__| $$ /      \ | $$   \$$ /      \ |       \ |  \| $$_  \$$|  \  |  \
+    | $$    $$|  $$$$$$\| $$      |  $$$$$$\| $$$$$$$\| $$| $$ \    | $$  | $$
+    | $$$$$$$\| $$    $$| $$   __ | $$  | $$| $$  | $$| $$| $$$$    | $$  | $$
+    | $$  | $$| $$$$$$$$| $$__/  \| $$__/ $$| $$  | $$| $$| $$      | $$__/ $$
+    | $$  | $$ \$$     \ \$$    $$ \$$    $$| $$  | $$| $$| $$       \$$    $$
+    \$$   \$$  \$$$$$$$  \$$$$$$   \$$$$$$  \$$   \$$ \$$ \$$       _\$$$$$$$
+                                                                    |  \__| $$
+                                                                    \$$    $$
+                                                                    \$$$$$$
+            Dev: 0xMush Github: https://github.com/0xMush/Reconify/''' + Style.RESET_ALL
+    print(banner)
     print(Back.GREEN + "1: Nmap"+ Style.RESET_ALL)
     print(Back.GREEN + "2: Nmap Scan Ai Analyzer" + Style.RESET_ALL )
     print(Back.GREEN + "3: FFUF (directry/subdomain/files Bruteforce Tool)" + Style.RESET_ALL)
     print(Back.GREEN + "4: WPscan (usage with api)" + Style.RESET_ALL)
     print(Back.GREEN + "5: RevShells & Listeners" + Style.RESET_ALL)
-    choice = int(input("Select A Tool To Use: "))
+    print(Back.GREEN + "6: Subfinder (Find Subdomains)" + Style.RESET_ALL)
+    print(Back.GREEN + "7: Httprobe (Check Valid Subdomains)" + Style.RESET_ALL)
+
+    choice = int(input(Fore.BLUE + "Select A Tool To Use: "))
 
     if choice == 1:
         nmap()
@@ -278,6 +352,10 @@ def manu():
         wpscan_tool()
     elif choice == 5:
         shell()
+    elif choice == 6:
+    	subfinder()
+    elif choice == 7:
+        httprobe()
     
 
 manu()
